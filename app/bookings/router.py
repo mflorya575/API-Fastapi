@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 
+from app.bookings.dao import BookingDAO
+
 
 router = APIRouter(
     prefix="/bookings",
@@ -8,5 +10,5 @@ router = APIRouter(
 
 
 @router.get('')
-def get_bookings():
-    pass
+async def get_bookings():
+    return await BookingDAO.find_all()
