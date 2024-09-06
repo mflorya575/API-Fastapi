@@ -2,7 +2,9 @@ from datetime import datetime, timedelta
 from jose import jwt
 
 from passlib.context import CryptContext
+from pydantic import EmailStr
 
+from app.users.dao import UsersDAO
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -23,3 +25,12 @@ def create_access_token(data: dict) -> str:
         to_encode, 'asdlajsdasASDASD', 'HS256'
     )
     return encoded_jwt
+
+
+async def authenticate_user(email: EmailStr, password: str):
+    user = await UsersDAO.find_one_or_none(email=email)
+    if not user and not verify_password(password, user.password):
+        return None
+    return user
+
+
